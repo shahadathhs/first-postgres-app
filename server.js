@@ -1,0 +1,57 @@
+import express from "express";
+import postgres from "postgres";
+import dotenv from "dotenv";
+
+// Load environment variables
+dotenv.config({ path: ".env" });
+
+// Initialize database connection
+const sql = postgres(process.env.DATABASE_URL, {
+  ssl: "require",
+});
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Middleware to parse JSON
+app.use(express.json());
+
+// Root Get route
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
+// Sample route to fetch all users
+app.get("/users", async (req, res) => {
+  try {
+    console.log("Connecting to Postgres...");
+    const users = await sql`SELECT * FROM users`;
+    console.log("Fetched users:", users);
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
+// Sample route to create a user
+app.post("/users", async (req, res) => {
+  const { name, email } = req.body;
+  try {
+    console.log("Connecting to Postgres...");
+    const result = await sql`
+      INSERT INTO users (name, email)
+      VALUES (${name}, ${email})
+      RETURNING *
+    `;
+    console.log("Inserted user:", result[0], result);
+    res.status(201).json(result[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Database insert error" });
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
