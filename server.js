@@ -52,6 +52,17 @@ app.post("/users", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(PORT, async () => {
+  try {
+    console.log(`Server running on http://localhost:${PORT}`);
+    console.log("Warming up database connection...");
+
+    // Run a lightweight query to ensure the DB is reachable
+    await sql`SELECT 1`;
+
+    console.log("Database connected successfully.");
+  } catch (err) {
+    console.error("Failed to connect to database at startup:", err);
+    process.exit(1); // optional: crash early if DB is unreachable
+  }
 });
