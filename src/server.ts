@@ -6,13 +6,13 @@ import dotenv from "dotenv";
 dotenv.config({ path: ".env" });
 
 // Initialize database connection
-const sql = postgres(process.env.DATABASE_URL, {
+const sql = postgres(process.env.DATABASE_URL as string, {
   ssl: "require",
   idle_timeout: 15000,
 });
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 // Middleware to parse JSON
 app.use(express.json());
