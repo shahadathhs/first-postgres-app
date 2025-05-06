@@ -2,7 +2,6 @@
   "name": "user-management",
   "version": "1.0.0",
   "main": "server.js",
-  "type": "module",
   "private": true,
   "scripts": {
     "dev": "ts-node --transpile-only -r tsconfig-paths/register src/server.ts",
@@ -13,10 +12,14 @@
     "format": "prettier --ignore-path .gitignore --check \"**/*.+(js|ts|json)\"",
     "format:fix": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "node",
+    "express",
+    "typescript"
+  ],
+  "author": "https://github.com/shahadathhs",
   "license": "ISC",
-  "description": "",
+  "description": "This is a user management system built with Node.js, Express, and TypeScript. Exploring PostgreSQL by building this application.",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
