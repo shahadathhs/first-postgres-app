@@ -6,6 +6,7 @@
     "baseUrl": "./src",
     "paths": {
       "@config/*": ["app/config/*"],
+      "@enums/*": ["app/enums/*"],
       "@errors/*": ["app/errors/*"],
       "@middlewares/*": ["app/middlewares/*"],
       "@services/*": ["app/modules/*"],

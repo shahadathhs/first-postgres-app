@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "ts-node --transpile-only -r tsconfig-paths/register src/server.ts",
-    "build": "tsc",
+    "build": "tsc && tsc-alias",
     "start": "node dist/server.js",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix",
@@ -27,6 +27,7 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "postgres": "^3.4.5",
+    "tsc-alias": "^1.8.16",
     "winston": "^3.17.0",
     "zod": "^3.24.4"
   },

@@ -1,33 +1,15 @@
-import express from 'express'
-import postgres from 'postgres'
-import dotenv from 'dotenv'
+import express, { Application } from 'express'
+import environment from 'config/env.config'
+import sql from 'config/sql.config'
 
-// Load environment variables
-dotenv.config({ path: '.env' })
-
-// Initialize database connection
-const sql = postgres(process.env.DATABASE_URL as string, {
-  ssl: 'require',
-  idle_timeout: 15000,
-})
-
-const app = express()
-const PORT = Number(process.env.PORT) || 3000
-
-// Middleware to parse JSON
-app.use(express.json())
-
-// Root Get route
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+const app: Application = express()
 
 // Sample route to fetch all users
 app.get('/users', async (req, res) => {
   try {
-    console.log('Connecting to Postgres...')
+    console.info('Connecting to Postgres...')
     const users = await sql`SELECT * FROM users`
-    console.log('Fetched users:', users)
+    console.info('Fetched users:', users)
     res.json(users)
   } catch (err) {
     console.error(err)
@@ -39,13 +21,13 @@ app.get('/users', async (req, res) => {
 app.post('/users', async (req, res) => {
   const { name, email } = req.body
   try {
-    console.log('Connecting to Postgres...')
+    console.info('Connecting to Postgres...')
     const result = await sql`
       INSERT INTO users (name, email)
       VALUES (${name}, ${email})
       RETURNING *
     `
-    console.log('Inserted user:', result[0], result)
+    console.info('Inserted user:', result[0], result)
     res.status(201).json(result[0])
   } catch (err) {
     console.error(err)
@@ -63,22 +45,22 @@ async function createUsersTableIfNotExists() {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `
-    console.log('✅ Users table is ready')
+    console.info('✅ Users table is ready')
   } catch (err) {
     console.error('❌ Error creating users table:', err)
   }
 }
 
-app.listen(PORT, '0.0.0.0', async () => {
+app.listen(environment.port as number, '0.0.0.0', async () => {
   try {
-    console.log(`Server running on http://localhost:${PORT}`)
-    console.log('Warming up database connection...')
+    console.info(`Server running on http://localhost:${environment.port}`)
+    console.info('Warming up database connection...')
 
     // Run a lightweight query to ensure the DB is reachable
     await sql`SELECT 1`
     await createUsersTableIfNotExists()
 
-    console.log('Database connected successfully.')
+    console.info('Database connected successfully.')
   } catch (err) {
     console.error('Failed to connect to database at startup:', err)
     process.exit(1)
